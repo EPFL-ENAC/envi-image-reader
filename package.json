@@ -1,0 +1,38 @@
+{
+  "name": "envi-image-reader",
+  "type": "module",
+  "version": "0.0.0",
+  "description": "Process images from the ENVI geospatial analysis software",
+  "scripts": {
+    "format": "prettier --write \"**/*.{js,ts}\" --ignore-path .gitignore",
+    "lint": "eslint --fix \"**/*.{js,ts}\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EPFL-ENAC/envi-image-reader.git"
+  },
+  "keywords": [
+    "envi",
+    "geospatial",
+    "image",
+    "processing"
+  ],
+  "contributors": [
+    "Son Pham-Ba <son.phamba@epfl.ch>",
+    "Laurent Jospin <laurent.jospin@epfl.ch>",
+    "Jesse Murray <jesse.murray@epfl.ch>",
+    "Jan Skaloud <jan.skaloud@epfl.ch>"
+  ],
+  "license": "LGPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/EPFL-ENAC/envi-image-reader/issues"
+  },
+  "homepage": "https://github.com/EPFL-ENAC/envi-image-reader",
+  "devDependencies": {
+    "@commitlint/config-conventional": "^20.3.0",
+    "commitlint": "^20.3.0",
+    "eslint": "^9.39.2",
+    "lefthook": "^2.0.13",
+    "prettier": "^3.7.4"
+  }
+}
