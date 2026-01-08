@@ -1,0 +1,39 @@
+name: Publish Package
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  id-token: write  # Required for OIDC
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build --if-present
+
+      - name: Set npm version from git tag
+        run: |
+          TAG_NAME=${{ github.ref_name }}
+          VERSION=${TAG_NAME#v}
+          echo "Syncing package.json version to: $VERSION"
+          npm version $VERSION --no-git-tag-version
+
+      - name: Publish package
+        run: npm publish
