@@ -10,9 +10,10 @@ import { EnviImage } from 'envi-image-reader/image';
 
 // headerFile and bilFile must be File objects
 const image = new EnviImage(headerFile, bilFile);
-await image.loadHeaderData();
+await image.loading;  // Wait until the image header has been read
+console.log(image.headerData);  // Object with header metadata
 
-const channels = [0, 1, 2]; // specify the channels to read
+const channels = [0, 1, 2];  // specify the channels to read
 const data = await image.getBilData(channels);  // Uint8Array
 ```
 

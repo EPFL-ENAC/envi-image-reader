@@ -1,8 +1,18 @@
 import type { BilDataType } from "./models";
 
+/**
+ * The supported file extensions for ENVI image data files.
+ */
 export const SUPPORTED_IMAGE_EXTENSIONS = [".bil", ".biq", ".bsq"];
+
+/**
+ * The supported file extensions for ENVI header files.
+ */
 export const SUPPORTED_HEADER_EXTENSIONS = [".hdr"];
 
+/**
+ * Base class for errors encountered in ENVI image handling.
+ */
 export class EnviError extends Error {
   constructor(message: string) {
     super(message);
@@ -10,6 +20,9 @@ export class EnviError extends Error {
   }
 }
 
+/**
+ * Error thrown for issues specific to ENVI header files.
+ */
 export class EnviHeaderError extends EnviError {
   constructor(message: string) {
     super(message);
@@ -17,6 +30,9 @@ export class EnviHeaderError extends EnviError {
   }
 }
 
+/**
+ * Error thrown for issues specific to ENVI BIL (image) files.
+ */
 export class EnviBilError extends EnviError {
   constructor(message: string) {
     super(message);
@@ -38,12 +54,35 @@ const BilDataTypes: Record<number, BilDataType> = {
   15: { name: "Uint64", byteSize: 8 },
 };
 
+/**
+ * Represents an ENVI image, including its header and image data files.
+ */
 export class EnviImage {
+  /**
+   * The ENVI header file (.hdr).
+   */
   headerFile: File;
+  /**
+   * The ENVI image file (.bil, .biq, or .bsq).
+   */
   bilFile: File;
+  /**
+   * Parsed key-value data from header file.
+   */
   headerData: Record<string, string | string[]>;
+  /**
+   * Promise that resolves when the header data is loaded.
+   */
   loading: Promise<void>;
 
+  /**
+   * Create a new EnviImage instance.
+   * @param headerFile The ENVI header file.
+   * @param bilFile The ENVI image file.
+   * @throws {EnviHeaderError} If the header file is invalid.
+   * @throws {EnviBilError} If the BIL file is invalid.
+   * @throws {EnviError} If file base names do not match.
+   */
   constructor(headerFile: File, bilFile: File) {
     if (
       !SUPPORTED_HEADER_EXTENSIONS.some((ext) =>
@@ -80,7 +119,13 @@ export class EnviImage {
       });
   }
 
-  /** Loads information contained in the .hdr file. Spases in keys are replaced with underscores. */
+  /**
+   * Loads and parses information contained in the .hdr file.
+   * Spaces in keys are replaced with underscores.
+   * @returns Parsed header data as a key-value object.
+   * @throws {EnviHeaderError} If the header file format is invalid.
+   * @private
+   */
   private async loadHeaderData(): Promise<Record<string, string | string[]>> {
     const data: Record<string, string | string[]> = {};
 
@@ -153,6 +198,12 @@ export class EnviImage {
     return data;
   }
 
+  /**
+   * Reads and returns the selected bands' image data as a contiguous Uint8Array.
+   * @param channels The list of band indices (channels) to extract.
+   * @returns The raw bytes for the selected bands, shape: [lines, samples, selected bands].
+   * @throws {EnviBilError} If the file or header is invalid, or bands are out of bounds.
+   */
   async getBilData(channels: number[]): Promise<Uint8Array> {
     await this.loading;
     const lines = parseInt(this.headerData["lines"] as string);
