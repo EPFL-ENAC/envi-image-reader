@@ -5,7 +5,8 @@
   "description": "Process images from the ENVI geospatial analysis software",
   "scripts": {
     "format": "prettier --write \"**/*.{js,ts}\" --ignore-path .gitignore",
-    "lint": "eslint --fix \"**/*.{js,ts}\""
+    "lint": "eslint --fix \"**/*.{js,ts}\"",
+	"build": "tsc"
   },
   "repository": {
     "type": "git",
@@ -34,5 +35,18 @@
     "eslint": "^9.39.2",
     "lefthook": "^2.0.13",
     "prettier": "^3.7.4"
-  }
+  },
+  "exports": {
+    "./image": {
+      "import": "./dist/image.js",
+      "types": "./dist/image.d.ts"
+    },
+    "./models": {
+      "import": "./dist/models.js",
+      "types": "./dist/models.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ]
 }
